@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs
+spec:
+  # capabilities
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany
+  - ReadWriteMany
+  capacity:
+    storage: 1Ti
+  volumeMode: Filesystem
+  # implementation
+  nfs:
+    path: /vol1
+    server: 172.25.52.106

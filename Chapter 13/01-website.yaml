@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+spec:
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      volumes:
+      - name: static-files
+        emptyDir:
+          sizeLimit: 20Mi
+      initContainers:
+      - name: copy-static-files
+        image: gcr.io/cloud-builders/gcloud
+        command:
+        - "bash"
+        - "-c"
+        - "gsutil cp -R $(SOURCE)/* /mnt/"
+        env:
+        - name: SOURCE
+          value: gs://my-gcp-project/my-bucket
+        volumeMounts:
+        - mountPath: /mnt
+          name: static-files
+          readOnly: false
+      containers:
+      - name: website
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: static-files
+          readOnly: true

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  nginx.conf: |
+    server {
+      location / {
+        root /data/www;
+      }
+
+      location /images/ {
+        root /data;
+      }
+    }

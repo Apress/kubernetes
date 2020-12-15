@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "500Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        env:
+        - name: M_CPU_REQUEST
+          valueFrom:
+            resourceFieldRef:
+                resource: requests.cpu
+                divisor: "0.001"
+        - name: MEMORY_REQUEST
+          valueFrom:
+            resourceFieldRef:
+                resource: requests.memory
+        - name: M_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+                resource: limits.cpu
+                divisor: "0.001"
+        - name: MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+                resource: limits.memory

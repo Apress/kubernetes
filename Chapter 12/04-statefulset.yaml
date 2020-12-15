@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: pg
+  name: pg
+spec:
+  serviceName: pg
+  selector:
+    matchLabels:
+      app: pg
+  template:
+    metadata:
+      labels:
+        app: pg
+    spec:
+      containers:
+      - image: postgres
+        name: pg
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/db-files
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pv-rwx-500g
+          readOnly: false
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: box
+  name: box
+spec:
+  serviceName: box
+  selector:
+    matchLabels:
+      app: box
+  template:
+    metadata:
+      labels:
+        app: box
+    spec:
+      containers:
+      - image: busybox
+        name: box
+        volumeMounts:
+        - name: data
+          mountPath: /mnt
+        command:
+          - sh
+          - -c
+          - "sleep $((10**10))"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pv-rwx-500g
+          readOnly: false

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: box
+  name: box
+spec:
+  selector:
+    matchLabels:
+      app: box
+  template:
+    metadata:
+      labels:
+        app: box
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1001
+        supplementalGroups:
+        - 1002
+        - 1003
+      containers:
+      - image: busybox
+        name: box
+        command:
+         - sh
+         - -c
+         - "touch /tmp/ready && sleep $((10**10))"

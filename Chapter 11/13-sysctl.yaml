@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: box
+  name: box
+spec:
+  selector:
+    matchLabels:
+      app: box
+  template:
+    metadata:
+      labels:
+        app: box
+    spec:
+      securityContext:
+        sysctls:
+        - name: kernel.shm_rmid_forced
+          value: "1"
+      containers:
+      - image: busybox
+        name: box

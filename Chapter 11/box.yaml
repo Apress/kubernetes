@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: box
+  name: box
+spec:
+  selector:
+    matchLabels:
+      app: box
+  template:
+    metadata:
+      labels:
+        app: box
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - image: yourlogin/test
+        name: box

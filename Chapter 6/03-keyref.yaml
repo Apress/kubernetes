@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vars
+data:
+  var1: value1
+  var2: value2
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: passwords
+stringData:
+  pass1: foo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        env:
+        - name: VAR1
+          valueFrom:
+            configMapKeyRef:
+                key: var1
+                name: vars
+        - name: VAR2
+          valueFrom:
+            configMapKeyRef:
+                key: var2
+                name: vars
+        - name: PASS1
+          valueFrom:
+            secretKeyRef:
+                key: pass1
+                name: passwords

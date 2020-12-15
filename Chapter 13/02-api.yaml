@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      initContainers:
+      - name: wait-backend
+        image: busybox
+        args:
+        - sh
+        - -c
+        - "until wget http://backend/; do sleep 1; done"
+      containers:
+      - name: api
+        image: api
+        ports:
+        - containerPort: 80

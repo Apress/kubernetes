@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "500Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        volumeMounts:
+        - name: resources-info
+          mountPath: /resources
+          readOnly: true
+      volumes:
+        - name: resources-info
+          downwardAPI:
+            items:
+            - path: limits/cpu
+              resourceFieldRef:
+                resource: limits.cpu
+                divisor: "0.001"
+                containerName: nginx
+            - path: limits/memory
+              resourceFieldRef:
+                resource: limits.memory
+                containerName: nginx
+            - path: requests/cpu
+              resourceFieldRef:
+                resource: requests.cpu
+                divisor: "0.001"
+                containerName: nginx
+            - path: requests/memory
+              resourceFieldRef:
+                resource: requests.memory
+                containerName: nginx

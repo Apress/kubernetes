@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - name: pod-info
+          mountPath: /pod
+          readOnly: true
+      volumes:
+        - name: pod-info
+          downwardAPI:
+            items:
+            - path: metadata/name
+              fieldRef:
+                fieldPath: metadata.name
+            - path: metadata/namespace
+              fieldRef:
+                fieldPath: metadata.namespace
+            - path: metadata/uid
+              fieldRef:
+                fieldPath: metadata.uid
+            - path: metadata/labels
+              fieldRef:
+                fieldPath: metadata.labels
+            - path: metadata/annotations
+              fieldRef:
+                fieldPath: metadata.annotations

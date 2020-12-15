@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: box
+  name: box
+spec:
+  serviceName: box
+  selector:
+    matchLabels:
+      app: box
+  template:
+    metadata:
+      labels:
+        app: box
+    spec:
+      containers:
+      - image: busybox
+        name: box
+        volumeMounts:
+        - name: data
+          mountPath: /mnt
+        command:
+          - sh
+          - -c
+          - "sleep $((10**10))"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: disk-rwo-10g
+          readOnly: false

@@ -1,0 +1,7 @@
+resources:
+- deployment.yaml
+
+configMapGenerator:
+- name: static-files
+  files:
+  - index.html
